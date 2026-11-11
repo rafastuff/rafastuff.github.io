@@ -1,12 +1,18 @@
 <!doctype html>
-<html lang="pt">
+<html lang="pt-PT">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
+  <!-- Content Security Policy: o backoffice só carrega código deste site e do unpkg (com hash
+       de integridade) e só fala com a API do GitHub (e, em localhost, com o servidor local).
+       'unsafe-eval' é exigido pelo validador de configuração do Decap. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://avatars.githubusercontent.com https://raw.githubusercontent.com https://*.githubusercontent.com; connect-src 'self' https://api.github.com http://localhost:8081; font-src 'self' data:; frame-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'" />
   <title>Backoffice · Rafael Vaz</title>
 </head>
 <body>
+  <!-- Arranque manual: cms.js regista as regras do portefólio antes de o Decap iniciar. -->
+  <script>window.CMS_MANUAL_INIT = true;</script>
   <!-- Decap CMS com versão fixa e hash de integridade: o browser recusa o ficheiro se o CDN o alterar. -->
   <script src="https://unpkg.com/decap-cms@3.17.3/dist/decap-cms.js"
           integrity="sha384-RWRzuHfiZSWCt3nEvG7B0v3cMgM1C2UuJmgBSL92GQh4uXmNSkbcthql/mNBqvjr"
@@ -15,6 +21,8 @@
   <script src="https://unpkg.com/marked@12.0.2/marked.min.js"
           integrity="sha384-/TQbtLCAerC3jgaim+N78RZSDYV7ryeoBCVqTuzRrFec2akfBkHS7ACQ3PQhvMVi"
           crossorigin="anonymous"></script>
+  <script src="pt-pt.js"></script>
   <script src="preview.js"></script>
+  <script src="cms.js"></script>
 </body>
 </html>

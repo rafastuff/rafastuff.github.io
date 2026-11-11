@@ -1,0 +1,15 @@
+# Serviço de login do backoffice no Cloudflare Workers (plano gratuito).
+# Sem segredos aqui: o client secret entra com `npx wrangler secret put GITHUB_CLIENT_SECRET`
+# ou no painel do Cloudflare. Ver docs/autenticacao.md.
+name = "rafastuff-cms-auth"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = "https://rafastuff.github.io"
+ALLOWED_SCOPES = "public_repo"
+# Preencher depois de criar a OAuth App (o Client ID não é secreto):
+# GITHUB_CLIENT_ID = "…"
+# Recomendado: só o teu login GitHub pode entrar
+# ALLOWED_USERS = "…"

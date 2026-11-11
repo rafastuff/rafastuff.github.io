@@ -1,14 +1,22 @@
-# Backoffice do portefólio (Decap CMS) · prova de conceito, só local.
-# Ver docs/cms-poc.md para abrir e experimentar.
+# Backoffice do portefólio (Decap CMS 3.17.3). Arranque e regras em public/admin/cms.js.
+# Ver docs/backoffice.md (uso), docs/autenticacao.md (login) e docs/rollback.md.
 #
-# local_backend: com `npx decap-server` a correr, o Decap grava no disco deste computador
-# em vez de no GitHub, e não pede login. Na Fase 2 isto sai e entra o login real.
-local_backend: true
+# Em localhost, cms.js liga `local_backend`: com `npm run cms` a correr, o Decap grava no
+# Git deste computador sem login. No site publicado usa o GitHub, com login pelo Worker.
 
 backend:
   name: github
-  repo: rafaelrvaz25-design/portfolio-v2
-  branch: cms-poc
+  repo: rafastuff/rafastuff.github.io
+  # Fase 2: as publicações do backoffice vão para o ramo `fonte` e não mexem no site em
+  # produção. Ao ativar a produção, passa a `main` (ver docs/ativacao.md).
+  branch: fonte
+  # Serviço de login (Cloudflare Worker, pasta cms-auth/). Endereço a preencher depois de
+  # o Worker ser criado; enquanto tiver este texto, o login real não funciona.
+  base_url: https://SUBSTITUIR-PELO-ENDERECO-DO-WORKER.workers.dev
+  # Só repositórios públicos: o token não dá acesso a repositórios privados.
+  auth_scope: public_repo
+  # Cada publicação entra no ramo como um único commit (histórico simples, reverter num passo).
+  squash_merges: true
   # Mensagens dos commits em português, para o histórico do GitHub ser legível.
   commit_messages:
     create: "Cria projeto «{{slug}}» (backoffice)"
@@ -17,12 +25,12 @@ backend:
     uploadMedia: "Carrega imagem {{path}} (backoffice)"
     deleteMedia: "Apaga imagem {{path}} (backoffice)"
 
-# Guardar e publicar são passos separados: cada edição fica num rascunho editorial
+# Guardar e publicar são passos separados: cada edição fica num pull request
 # até carregar em Publicar.
 publish_mode: editorial_workflow
 
-locale: pt
-site_url: http://localhost:4000
+locale: pt-PT
+site_url: https://rafastuff.github.io
 display_url: https://rafastuff.github.io
 
 # Imagens novas: public/images/uploads/ (as existentes ficam onde estão, com o mesmo URL).
@@ -56,6 +64,7 @@ collections:
         name: visibilidade
         widget: select
         default: rascunho
+        hint: "Um projeto novo ou duplicado é sempre guardado como Rascunho. Depois de criado, escolha aqui Público ou Não listado e publique."
         options:
           - { label: "Público: homepage, listagens e motores de pesquisa", value: publico }
           - { label: "Não listado: só por link direto, sem indexação", value: nao_listado }
@@ -69,7 +78,7 @@ collections:
         name: slug
         widget: string
         pattern: ['^[a-z0-9]+(-[a-z0-9]+)*$', 'Só letras minúsculas sem acentos, números e hífenes. Ex.: rrs-pingo-doce']
-        hint: Fica em rafastuff.github.io/projetos/<slug>/. Não mudar depois de publicado, para não partir links.
+        hint: "Fica em rafastuff.github.io/projetos/<slug>/. Escolhe-se ao criar o projeto e não muda depois: tem de ser igual ao nome do ficheiro, senão a publicação é bloqueada."
       - label: Ordem
         name: ordem
         widget: number

@@ -1,0 +1,5 @@
+{
+  "private": true,
+  "type": "module",
+  "description": "Serviço de login do backoffice (Cloudflare Worker). Ver docs/autenticacao.md."
+}

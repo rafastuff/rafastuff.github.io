@@ -39,15 +39,30 @@ function fail(id, msg) {
   throw new Error(`content/projetos/${id}.yml: ${msg}`);
 }
 
+// Imagem referida no conteúdo: tem de existir em public/ e ter um caminho seguro.
+function checkImage(id, where, src, required) {
+  if (!src) { if (required) fail(id, `${where}: falta a imagem`); return; }
+  if (/[\s()]/.test(src)) fail(id, `${where}: o caminho da imagem não pode ter espaços nem parênteses (${src})`);
+  const rel = String(src).split('?')[0].replace(/^\//, '');
+  if (rel.includes('..') || !rel.startsWith('images/')) fail(id, `${where}: a imagem tem de estar em public/images/ (${src})`);
+  if (!fs.existsSync(path.join(process.cwd(), 'public', rel))) fail(id, `${where}: a imagem não existe em public/ (${src})`);
+}
+
 // Validação: um erro aqui faz falhar o build, em vez de publicar uma página partida.
 function validate(id, p) {
   if (!SLUG.test(id)) fail(id, `o nome do ficheiro tem de ser um slug (a-z, 0-9 e hífenes)`);
   if (!p || typeof p !== 'object') fail(id, 'ficheiro vazio ou inválido');
   if (!SLUG.test(p.slug || '')) fail(id, `slug inválido: "${p.slug}"`);
+  // O nome do ficheiro é o ID estável do projeto e o slug é o endereço. Têm de ser iguais:
+  // o Decap cria o ficheiro a partir do slug e nunca o renomeia, por isso um slug diferente
+  // significa um endereço mudado depois de criado, ou um duplicado com o slug do original
+  // (o Decap gravaria «gallo-1.yml» com o slug «gallo»).
+  if (p.slug !== id) fail(id, `o endereço (slug "${p.slug}") tem de ser igual ao nome do ficheiro ("${id}"). O endereço escolhe-se ao criar o projeto e não muda depois.`);
   if (!VISIBILIDADES.includes(p.visibilidade)) fail(id, `visibilidade inválida: "${p.visibilidade}"`);
   if (typeof p.ordem !== 'number') fail(id, 'a ordem tem de ser um número');
   for (const f of ['titulo', 'categoria', 'titulo_pagina']) if (!p[f]) fail(id, `falta o campo ${f}`);
   for (const f of ['papel', 'cliente', 'setor']) if (!p.ficha?.[f]) fail(id, `falta o campo ficha.${f}`);
+  checkImage(id, 'capa', p.capa?.imagem, true);
   if (!Array.isArray(p.secoes) || !p.secoes.length) fail(id, 'o projeto precisa de pelo menos uma secção');
   p.secoes.forEach((s, i) => {
     const where = `secção ${i + 1}`;
@@ -56,11 +71,9 @@ function validate(id, p) {
       if (b.tipo === 'texto') {
         if (/^#{1,2} /m.test(b.corpo || '')) fail(id, `${where}: um bloco de texto não pode ter títulos # ou ## (usar ### ou uma secção nova)`);
       } else if (b.tipo === 'figura') {
-        if (!b.imagem) fail(id, `${where}: figura sem imagem`);
+        checkImage(id, `${where}: figura`, b.imagem, true);
+        checkImage(id, `${where}: figura (telemóvel)`, b.imagem_mobile, false);
         if (!b.legenda) fail(id, `${where}: figura sem legenda`);
-        if (/[\s()]/.test(b.imagem)) fail(id, `${where}: o caminho da imagem não pode ter espaços nem parênteses (${b.imagem})`);
-        const file = path.join(process.cwd(), 'public', b.imagem.split('?')[0].replace(/^\//, ''));
-        if (!fs.existsSync(file)) fail(id, `${where}: a imagem não existe em public/ (${b.imagem})`);
       } else if (b.tipo === 'numeros') {
         for (const it of b.itens || []) {
           if (String(it.valor ?? '').includes('|')) fail(id, `${where}: um número não pode conter "|"`);
@@ -76,7 +89,12 @@ function readYamlProjects() {
     .filter((f) => f.endsWith('.yml'))
     .map((f) => {
       const id = f.replace(/\.yml$/, '');
-      const data = YAML.parse(fs.readFileSync(path.join(DIR, f), 'utf8'));
+      let data;
+      try {
+        data = YAML.parse(fs.readFileSync(path.join(DIR, f), 'utf8'));
+      } catch (e) {
+        fail(id, `o ficheiro não é YAML válido (${e.message.split('\n')[0]})`);
+      }
       validate(id, data);
       return data && { id, data };
     });
@@ -134,10 +152,14 @@ export function getProjects() {
       source: { kind: 'yaml', data },
     })),
   ];
-  const seen = new Map();
-  for (const p of list) {
-    if (seen.has(p.slug)) throw new Error(`Slug repetido: "${p.slug}" (${seen.get(p.slug)} e ${p.id})`);
-    seen.set(p.slug, p.id);
+  // IDs e slugs únicos, sem distinguir maiúsculas (alguns sistemas de ficheiros também não distinguem).
+  for (const field of ['id', 'slug']) {
+    const seen = new Map();
+    for (const p of list) {
+      const key = String(p[field]).toLowerCase();
+      if (seen.has(key)) throw new Error(`${field === 'id' ? 'ID' : 'Slug'} repetido: "${p[field]}" (${seen.get(key)} e ${p.id})`);
+      seen.set(key, p.id);
+    }
   }
   return list.sort((a, b) => a.ordem - b.ordem);
 }
