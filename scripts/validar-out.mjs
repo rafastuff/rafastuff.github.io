@@ -59,6 +59,16 @@ for (const p of projects) {
   }
 }
 
+// Nenhuma página de projeto pode existir sem um projeto público ou não listado por trás
+// (apanha páginas de rascunhos, de projetos apagados ou de builds antigos).
+const allowedPages = new Set(projects.filter((p) => p.visibilidade === 'publico' || p.visibilidade === 'nao_listado').map((p) => p.slug));
+const projDir = path.join(OUT, 'projetos');
+if (fs.existsSync(projDir)) {
+  for (const d of fs.readdirSync(projDir)) {
+    if (!allowedPages.has(d)) ok(false, `out/projetos/${d}/: página sem projeto público ou não listado correspondente`);
+  }
+}
+
 // Imagens referidas nas páginas HTML (src, srcset) existem em out/.
 for (const f of allHtml.filter((f) => f.endsWith('.html'))) {
   const html = read(f);
