@@ -7,12 +7,12 @@
   <!-- Content Security Policy: o backoffice só carrega código deste site e do unpkg (com hash
        de integridade) e só fala com a API do GitHub (e, em localhost, com o servidor local).
        'unsafe-eval' é exigido pelo validador de configuração do Decap. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://avatars.githubusercontent.com https://raw.githubusercontent.com https://*.githubusercontent.com; connect-src 'self' https://api.github.com http://localhost:8081; font-src 'self' data:; frame-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://avatars.githubusercontent.com https://raw.githubusercontent.com https://*.githubusercontent.com; connect-src 'self' blob: data: https://api.github.com http://localhost:8081; font-src 'self' data:; frame-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'" />
   <title>Backoffice · Rafael Vaz</title>
 </head>
 <body>
   <!-- Arranque manual: cms.js regista as regras do portefólio antes de o Decap iniciar. -->
-  <script>window.CMS_MANUAL_INIT = true;</script>
+  <script src="arranque-manual.js"></script>
   <!-- Decap CMS com versão fixa e hash de integridade: o browser recusa o ficheiro se o CDN o alterar. -->
   <script src="https://unpkg.com/decap-cms@3.17.3/dist/decap-cms.js"
           integrity="sha384-RWRzuHfiZSWCt3nEvG7B0v3cMgM1C2UuJmgBSL92GQh4uXmNSkbcthql/mNBqvjr"

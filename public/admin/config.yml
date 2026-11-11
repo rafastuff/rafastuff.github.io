@@ -120,7 +120,7 @@ collections:
         collapsed: false
         fields:
           - { label: Imagem de capa (16:9), name: imagem, widget: image, choose_url: false }
-          - { label: Cor de fundo, name: cor_fundo, widget: color, hint: "Mostrada enquanto a capa carrega. Ex.: #e2c879" }
+          - { label: Cor de fundo, name: cor_fundo, widget: color, allowInput: true, hint: "Mostrada enquanto a capa carrega. Pode colar o código, ex.: #e2c879" }
       - label: Secções
         name: secoes
         widget: list
