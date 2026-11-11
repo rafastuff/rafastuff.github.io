@@ -1,0 +1,81 @@
+# Valida os conteúdos, gera o site e (só quando ativado) publica no GitHub Pages.
+#
+# Corre em cada push para `fonte` e `main`, em cada pull request (incluindo os do backoffice,
+# ramos cms/…) e à mão (Actions → Site → Run workflow).
+#
+# FASE 2: a publicação está DESLIGADA. O job «publicar» só corre quando, ao mesmo tempo:
+#   1. é um push para `main`;
+#   2. a variável do repositório PUBLICAR_PRODUCAO vale "sim"
+#      (Settings → Secrets and variables → Actions → Variables);
+#   3. o GitHub Pages está configurado com «Source: GitHub Actions».
+# Hoje o `main` ainda é o site antigo (sem este ficheiro) e o Pages publica a partir do ramo,
+# por isso nenhuma execução deste workflow altera o site. Ver docs/ativacao.md.
+name: Site
+
+on:
+  push:
+    branches: [fonte, main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validar:
+    name: Validar e gerar o site
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Validar conteúdos (YAML, campos, visibilidade, IDs e slugs únicos, imagens)
+        run: node scripts/validar-conteudos.mjs
+
+      - name: Gerar o site (Next.js)
+        run: npx next build
+        env:
+          BASE_PATH: ''
+
+      - name: Validar o site gerado (visibilidade, sitemap, noindex, imagens)
+        run: node scripts/validar-out.mjs
+
+      - name: Verificar a integridade das páginas (ligações e recursos internos)
+        run: node scripts/verificar-ligacoes.mjs
+
+      - name: Guardar o site gerado como artefacto
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: out
+          retention-days: 14
+
+  publicar:
+    name: Publicar no GitHub Pages
+    needs: validar
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.PUBLICAR_PRODUCAO == 'sim'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publicar.outputs.page_url }}
+    concurrency:
+      group: pages-producao
+      cancel-in-progress: false
+    steps:
+      - name: Publicar o artefacto validado
+        id: publicar
+        uses: actions/deploy-pages@v5
