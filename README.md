@@ -1,25 +1,38 @@
-# Rafael Vaz · Portfolio (alpha)
+# Rafael Vaz · Portfolio
 
-Site em Next.js 13 (export estático), com Locomotive Scroll, GSAP e Framer Motion.
-Base: template "awwwards-landing-page"; todo o conteúdo e imagens originais foram removidos.
+Site em Next.js 13 (export estático), com Locomotive Scroll, GSAP e Framer Motion, publicado
+em https://rafastuff.github.io. Os conteúdos dos projetos editam-se num backoffice (Decap CMS).
+
+> **Estado (Fase 2, 11 nov 2026):** este ramo (`fonte`) é a futura fonte de verdade. O site
+> publicado ainda vem do ramo `main` (ficheiros estáticos), com cópia em `publicado-legado`.
+> Ver `docs/ativacao.md`.
 
 ## Onde está o quê
-- `content/*.md`: texto dos case studies. Editar aqui; as páginas são geradas a partir destes ficheiros.
-  As secções "Por confirmar" e "Imagens necessárias" são notas e não aparecem no site.
-- `src/data/projects.js`: lista de projetos, cores e legendas das imagens de cada secção.
-- `src/common/Placeholder`: espaços reservados para fotos. Trocar por imagens reais em `public/images/`.
+- `content/projetos/*.yml`: projetos editados no backoffice (hoje, só o Gallo).
+- `content/*.md` + `src/data/projects.js`: projetos ainda no formato antigo (FPF, RRS, Monday).
+  `src/lib/content.js` junta os dois formatos. As secções "Por confirmar" e
+  "Imagens necessárias" dos `.md` são notas e não aparecem no site.
+- `public/admin/`: backoffice (configuração, tradução pt-PT, regras, pré-visualização).
+- `cms-auth/`: serviço de login com GitHub (Cloudflare Worker).
+- `.github/workflows/site.yml`: validação, build e (quando ativada) publicação.
+- `scripts/`: migração, validações e comparação com a linha de base.
+
+## Documentação
+- `docs/backoffice.md`: usar o backoffice (também localmente).
+- `docs/autenticacao.md`: configurar e revogar o login.
+- `docs/ativacao.md`: proteções do repositório e passos para ativar a produção.
+- `docs/rollback.md`: recuperação.
 
 ## Comandos
 - `npm install`
 - `npm run dev` (abre em http://localhost:4000)
-- `npm run build` (gera o site estático em `out/`)
+- `npm run cms` (servidor local do backoffice)
+- `BASE_PATH= npm run build` (gera o site estático em `out/`)
 
-## Publicação (GitHub Pages)
-O código fica na branch `main`; o site gerado fica na branch `gh-pages`.
-Para atualizar o site:
-1. `BASE_PATH=/portfolio-v2 npm run build`
-2. `touch out/.nojekyll` (sem isto o GitHub ignora a pasta `_next`)
-3. Publicar o conteúdo de `out/` na branch `gh-pages`.
+## Histórico
+Este repositório inclui o histórico do `rafaelrvaz25-design/portfolio-v2`, onde o site foi
+desenvolvido. Esse repositório continua a servir o link antigo (ramo `gh-pages`, com
+redirecionamentos, `/alpha/` e `/webflow/`) e não deve ser apagado.
 
 ## As três versões publicadas
 - `/` · versão atual (tipografia Archivo, scroller de projetos)
