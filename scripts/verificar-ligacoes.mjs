@@ -44,5 +44,6 @@ for (const page of pages) {
 console.log(`Páginas: ${pages.length}; ligações e recursos internos verificados: ${checked}`);
 if (missing.length) {
   console.log(`FALHOU (${missing.length} em falta):\n- ${missing.slice(0, 50).join('\n- ')}`);
+  if (process.env.GITHUB_ACTIONS) for (const m of missing.slice(0, 20)) console.log(`::error title=Ligação em falta::${m}`);
   process.exitCode = 1;
 } else console.log('OK: todas as ligações e recursos internos existem.');

@@ -28,7 +28,7 @@ concurrency:
 jobs:
   validar:
     name: Validar e gerar o site
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
@@ -65,7 +65,7 @@ jobs:
     name: Publicar no GitHub Pages
     needs: validar
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.PUBLICAR_PRODUCAO == 'sim'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       pages: write
       id-token: write

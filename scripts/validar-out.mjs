@@ -83,5 +83,7 @@ const counts = projects.reduce((a, p) => ({ ...a, [p.visibilidade]: (a[p.visibil
 console.log(`Projetos: ${JSON.stringify(counts)}; ficheiros verificados: ${allHtml.length}`);
 if (errors.length) {
   console.log(`FALHOU (${errors.length}):\n- ${errors.join('\n- ')}`);
+  // No GitHub Actions, cada erro aparece também como anotação na página da execução.
+  if (process.env.GITHUB_ACTIONS) for (const e of errors) console.log(`::error title=Validação::${e.replace(/\n/g, ' ')}`);
   process.exitCode = 1;
 } else console.log('OK: visibilidades, sitemap, noindex e imagens corretos.');
