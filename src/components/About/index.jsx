@@ -4,7 +4,7 @@ import styles from './style.module.scss';
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
-// Sobre: a foto e dois parágrafos curtos, que acrescentam ao hero em vez de o repetir.
+// Sobre: a foto e dois parágrafos (apresentação e interesses), com cores diferentes.
 export default function About() {
   return (
     <section id="sobre" className={styles.about}>
@@ -15,15 +15,17 @@ export default function About() {
       <div className={styles.text}>
         <h2 className="label">Sobre</h2>
         <FadeUp as="p" className={styles.lede}>
-          Sou UX/UI Designer na Monday, em Lisboa. Já trabalhei em contextos muito diferentes,
-          de um Design System para a Federação Portuguesa de Futebol a um self-checkout de
-          supermercado, e começo sempre por perceber o que já funciona, o que falha e porquê.
+          Olá! Sou o Rafa, moro em Lisboa e estou atualmente na Monday.
+          <br />
+          Fascinado por design systems, gosto de perceber o que funciona, o que falha, porquê e
+          como consigo encontrar novos formatos para o projeto. Nestes quase 4 anos, já trabalhei
+          com marcas como a Federação Portuguesa de Futebol, Pingo Doce, Perfumes &amp; Companhia,
+          EDP, Gallo e muitas outras.
         </FadeUp>
         <FadeUp as="p" className={styles.body}>
-          Já resolvi problemas sozinho, como único designer ao lado de dois developers e com duas
-          semanas de prazo, e em equipa, a apresentar e defender decisões junto do cliente. Gosto
-          de decisões que se conseguem justificar e de acompanhar o que acontece depois da entrega:
-          no Design System da FPF, continuei a manter e a evoluir a biblioteca durante mais um ano.
+          Fora do design, é provável encontrar-me a jogar ou ler banda desenhada. Também sou
+          interessado por carros, música e relógios… Todos estes interesses vão transformando
+          ideias novas.
         </FadeUp>
       </div>
     </section>
