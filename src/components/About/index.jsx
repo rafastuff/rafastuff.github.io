@@ -25,7 +25,7 @@ export default function About() {
           {semViuvas(
             'Olá! Sou o Rafa, moro em Lisboa e estou atualmente na Monday. Fascinado por design systems, ' +
             'gosto de perceber o que funciona, o que falha, porquê e como consigo encontrar novos formatos ' +
-            'para os projetos. Nestes quase 4 anos, já trabalhei com marcas como a Federação Portuguesa de ' +
+            'para os projetos. Em mais de 3 anos, já trabalhei com marcas como a Federação Portuguesa de ' +
             'Futebol, Pingo Doce, Perfumes & Companhia, EDP, Gallo e muitas outras.'
           )}
         </FadeUp>

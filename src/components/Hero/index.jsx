@@ -39,7 +39,7 @@ export default function Hero() {
         transition={{ duration: 0.8, delay: 0.9 }}
       >
         <p>
-          Três anos a desenhar produtos digitais
+          Mais de 3 anos a desenhar produtos digitais
           <br />
           para desporto, e-commerce e retalho.
         </p>
