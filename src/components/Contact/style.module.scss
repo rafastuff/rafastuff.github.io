@@ -15,6 +15,14 @@
   line-height: 0.86;
 }
 
+.download {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  svg { flex: none; display: block; }
+}
+
 .row {
   display: flex;
   flex-wrap: wrap;

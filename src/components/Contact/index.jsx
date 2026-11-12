@@ -28,7 +28,14 @@ export default function Contact() {
       <FadeUp className={styles.row}>
         <Button href={`mailto:${person.email}`} tone="dark">{person.email}</Button>
         <Button href={person.linkedin} tone="dark" external>LinkedIn</Button>
-        <Button href={`${BASE}/cv-rafael-vaz.pdf`} tone="dark" download="Rafael_Vaz_CV.pdf" ariaLabel="Descarregar CV (PDF, 44 KB)">Descarregar CV</Button>
+        <Button href={`${BASE}/cv-rafael-vaz.pdf`} tone="dark" download="Rafael_Vaz_CV.pdf" ariaLabel="Descarregar CV (PDF, 44 KB)">
+          <span className={styles.download}>
+            Descarregar CV
+            <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false">
+              <path d="M8 2v8M4.5 6.5 8 10l3.5-3.5M2.5 13.5h11" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+        </Button>
       </FadeUp>
 
       <div className={styles.footer}>
