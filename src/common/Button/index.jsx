@@ -7,7 +7,8 @@ import styles from './style.module.scss';
 
 // Botão com o carácter da alpha: magnético e, no hover, um círculo que sobe e enche o fundo.
 // `tone`: "light" (para fundos claros) ou "dark" (para fundos escuros).
-export default function Button({ href, children, tone = 'light', external = false, className = '' }) {
+// `download`: nome do ficheiro a descarregar (ex.: o CV). `ariaLabel`: nome acessível, quando é preciso mais do que o texto visível.
+export default function Button({ href, children, tone = 'light', external = false, download, ariaLabel, className = '' }) {
   const circle = useRef(null);
   const tl = useRef(null);
   const leaveTimer = useRef(null);
@@ -39,6 +40,8 @@ export default function Button({ href, children, tone = 'light', external = fals
     <Magnetic strength={0.25}>
       {external ? (
         <a href={href} className={cls} onMouseEnter={enter} onMouseLeave={leave} target="_blank" rel="noreferrer">{inner}</a>
+      ) : download ? (
+        <a href={href} className={cls} onMouseEnter={enter} onMouseLeave={leave} download={download} type="application/pdf" aria-label={ariaLabel}>{inner}</a>
       ) : href.startsWith('mailto:') ? (
         <a href={href} className={cls} onMouseEnter={enter} onMouseLeave={leave}>{inner}</a>
       ) : (

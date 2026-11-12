@@ -5,6 +5,8 @@ import { person } from '../../data/projects';
 import styles from './style.module.scss';
 import Button from '../../common/Button';
 
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 function useLisbonTime() {
   const [time, setTime] = useState('');
   useEffect(() => {
@@ -26,6 +28,7 @@ export default function Contact() {
       <FadeUp className={styles.row}>
         <Button href={`mailto:${person.email}`} tone="dark">{person.email}</Button>
         <Button href={person.linkedin} tone="dark" external>LinkedIn</Button>
+        <Button href={`${BASE}/cv-rafael-vaz.pdf`} tone="dark" download="Rafael_Vaz_CV.pdf" ariaLabel="Descarregar CV (PDF, 44 KB)">Descarregar CV</Button>
       </FadeUp>
 
       <div className={styles.footer}>
